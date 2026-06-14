@@ -9,7 +9,6 @@ node_modules/
 dist/
 .DS_Store
 *.log
-*.txt
 backend_log.txt
 backend_err.txt
 channel_log.txt
