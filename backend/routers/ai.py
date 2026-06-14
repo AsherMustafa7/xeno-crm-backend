@@ -90,7 +90,8 @@ CITIES = ["mumbai", "delhi", "bangalore", "hyderabad", "chennai", "pune",
 TAGS = ["vip", "new", "churned", "loyal", "seasonal", "high-value"]
 
 def _local_parse_segment(text: str) -> dict:
-    text_l = text.lower()
+    # Normalize smart quotes to straight quotes before processing
+    text_l = text.lower().replace('’', "'").replace('‘', "'")
     conditions = []
     logic = "OR" if " or " in text_l else "AND"
 
@@ -102,8 +103,8 @@ def _local_parse_segment(text: str) -> dict:
     if spent_lt:
         conditions.append({"field": "total_spent", "op": "lt", "value": float(spent_lt.group(1))})
 
-    # Days since purchase: "haven't bought in 30 days", "inactive for 60 days", "no purchase in last 45 days"
-    inactive = re.search(r"(?:haven['’]?t\s+(?:bought|purchased|ordered)|inactive\s+for|no\s+purchase\s+in(?:\s+last)?|not\s+(?:bought|purchased)\s+in(?:\s+the\s+last)?)\s*(\d+)\s*days?", text_l)
+    # Days since purchase: "haven’t bought in 30 days", "inactive for 60 days", "no purchase in 45 days"
+    inactive = re.search(r"(?:haven’?t\s+(?:bought|purchased|ordered)(?:\s+in(?:\s+the\s+last)?)?|inactive\s+for|no\s+purchase\s+in(?:\s+the\s+last)?|not\s+(?:bought|purchased)\s+in(?:\s+the\s+last)?)\s*(\d+)\s*days?", text_l)
     if inactive:
         conditions.append({"field": "days_since_last_purchase", "op": "gt", "value": int(inactive.group(1))})
 
