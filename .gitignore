@@ -1,3 +1,5 @@
+frontend/
+.claude/
 venv/
 __pycache__/
 *.pyc
